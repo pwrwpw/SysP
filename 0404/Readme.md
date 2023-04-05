@@ -6,8 +6,8 @@
 #include <stdio.h>
 void fuc(unsigned n){   //16진수의 값을 10진수로 불러와 2진수로 변환하는 함수
 	for(int i = 15; i >=  0; i--) {. //16비트의 2진수를 출력하기 위해 for문 사용
-		if(i == 11 || i == 8) printf("  :");  // 3비트 7비트 씩 끊음
-		int output = n >> i & 1; //n번째 자리가 0이면 0출력 1이면 1출력
+		if(i == 11 || i == 8) printf("  :");  // 3비트,7비트 씩 끊음
+		int output = n >> i & 1; //i번째 자리가 0이면 0출력 1이면 1출력
 		printf("%d", output);
 	}
 }
