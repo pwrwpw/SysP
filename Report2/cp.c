@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
 
     if (argc != 3) {
         fprintf(stderr, "사용법: %s 파일1 파일2\n", argv[0]);
-        reㅈturn 1;
+        return 1;
     }
 
     fp1 = fopen(argv[1], "r");
