@@ -22,7 +22,11 @@
 ```
 **실행 화면:**
 
-[그림]
+![cat](/jpg/cat.png)
+![cat](/jpg/cat -b.png)
+![cat](/jpg/cat -n.png)
+![cat](/jpg/cat -E.png)
+![cat](/jpg/cat -T.png)
 
 ### `clear`
 
