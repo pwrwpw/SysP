@@ -23,10 +23,10 @@
 **실행 화면:**
 
 ![cat](./jpg/cat.png)
-![cat](./jpg/cat -b.png)
-![cat](./jpg/cat -n.png)
-![cat](./jpg/cat -E.png)
-![cat](./jpg/cat -T.png)
+![cat1](./jpg/cat -b.png)
+![cat2](./jpg/cat -n.png)
+![cat3](./jpg/cat -E.png)
+![cat4](./jpg/cat -T.png)
 
 ### `clear`
 
