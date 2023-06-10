@@ -1,85 +1,89 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <unistd.h>
 
-void catFile(FILE* file, int n, int e, int t, int b);
+#define SIZE 1024
 
-int main(int argc, char* argv[]) {
-    FILE* file;
+int cat(char *filename, int n, int b, int E, int T);
 
-    // 옵션 플래그 변수 초기화
-    int n = 0; // -n 옵션
-    int e = 0; // -E 옵션
-    int t = 0; // -T 옵션
-    int b = 0; // -b 옵션
+int main(int argc, char *argv[])
+{
+    int n = 0, b = 0, e = 0, t = 0;
+    int opt;
 
-    // 옵션 처리
-    for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "-n") == 0) {
-            n = 1;
-        } else if (strcmp(argv[i], "-E") == 0) {
-            e = 1;
-        } else if (strcmp(argv[i], "-T") == 0) {
-            t = 1;
-        } else if (strcmp(argv[i], "-b") == 0) {
-            b = 1;
-        } else {
-            // 파일 열기 시도
-            file = fopen(argv[i], "r");
-            if (file == NULL) {
-                perror("파일 열기 실패");
-                return 1;
-            }
-
-            // 파일 내용 출력
-            catFile(file, n, e, t, b);
-
-            // 파일 닫기
-            fclose(file);
+    // 옵션 처리를 위한 반복문
+    while ((opt = getopt(argc, argv, "nbET")) != -1)
+    {
+        switch (opt)
+        {
+        case 'n':
+            n = 1; // -n 옵션 설정
+            break;
+        case 'b':
+            b = 1; // -b 옵션 설정
+            break;
+        case 'E':
+            e = 1; // -E 옵션 설정
+            break;
+        case 'T':
+            t = 1; // -T 옵션 설정
+            break;
+        default:
+            printf("%s: 잘못된 옵션 -- '%c'\n", argv[0], optopt);
+            return 1;
         }
     }
 
-    return 0;
+    // 파일명이 입력되지 않은 경우 오류 메시지 출력
+    if (optind == argc)
+    {
+        printf("파일명을 입력해주세요.\n");
+        return 1;
+    }
+
+    char *filename = argv[optind];
+    return cat(filename, n, b, e, t);
 }
 
-// 파일 내용을 읽고 출력하는 함수
-void catFile(FILE* file, int n, int e, int t, int b) {
-    int c;
-    int lineNumber = 1;
-    int printLineNumber = n || b; // 줄 번호를 출력해야 할지 여부를 결정하기 위한 변수
-    int emptyLine = 1;            // 빈 줄 여부를 체크하기 위한 변수
+// cat 함수: 파일을 읽어서 출력하는 함수
+int cat(char *filename, int n, int b, int E, int T)
+{
+    FILE *fp = fopen(filename, "r");
 
-    c = fgetc(file);
-    while (c != EOF) {
-        if (c == '\n') {
-            if (printLineNumber) {
-                if (b && emptyLine) {
-                    printf("%6d  ", lineNumber);
-                    lineNumber++;
-                } else if (n) {
-                    printf("%6d  ", lineNumber);
-                    lineNumber++;
-                }
-            }
-            printLineNumber = n || b;
-            emptyLine = 1;
-        } else if (c != ' ' && c != '\t') {
-            emptyLine = 0;
-        }
-
-        if (t && c == '\t') {
-            putchar('^');
-            putchar('I');
-            printLineNumber = 0;
-        } else if (e && c == '\n') {
-            putchar('$');
-            putchar('\n');
-            printLineNumber = 0;
-        } else {
-            putchar(c);
-            printLineNumber = 0;
-        }
-
-        c = fgetc(file);
+    // 파일 열기 실패 시 오류 메시지 출력
+    if (fp == NULL)
+    {
+        printf("존재하지 않은 파일입니다.\n");
+        return 1;
     }
+
+    char buff[SIZE]; // 파일의 내용을 저장할 버퍼
+    int line = 0;    // 줄 번호
+
+    // 파일의 각 줄을 읽어서 처리
+    while (fgets(buff, SIZE, fp) != NULL)
+    {
+        if (b && buff[0] != '\n')
+            printf("%6d  ", ++line); // -b 옵션이 설정되고 빈 줄이 아닌 경우에 줄 번호 출력
+        else if (!b && n)
+            printf("%6d  ", ++line); // -n 옵션이 설정되었을 때 줄 번호 출력
+
+        if (b && E && buff[0] == '\n')
+            printf("%6s  ", ""); // -b 옵션이 설정되고 -E 옵션이 설정되고 빈 줄인 경우에 빈 줄 표시
+
+        int i = 0;
+        while (buff[i] != '\0')
+        {
+            if (E && buff[i] == '\n')
+                printf("$\n"); // -E 옵션이 설정되어 있을 때 줄의 끝에 $ 표시
+            else if (T && buff[i] == '\t')
+                printf("^I"); // -T 옵션이 설정되어 있을 때 탭 문자를 ^I로 표시
+            else
+                printf("%c", buff[i]); // 그 외의 경우에는 문자 그대로 출력
+
+            i++; // 다음 문자로 이동
+        }
+    }
+
+    fclose(fp);
+    return 0;
 }
