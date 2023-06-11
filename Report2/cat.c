@@ -3,15 +3,15 @@
 
 #define SIZE 1024
 
-int cat(char *filename, int n, int b, int E, int T);
+int cat(char *filename, int n, int b, int E, int T, int s);
 
 int main(int argc, char *argv[])
 {
-    int n = 0, b = 0, e = 0, t = 0;
+    int n = 0, b = 0, e = 0, t = 0, s = 0;
     int opt;
 
     // 옵션 처리를 위한 반복문
-    while ((opt = getopt(argc, argv, "nbET")) != -1)
+    while ((opt = getopt(argc, argv, "nbETs")) != -1)
     {
         switch (opt)
         {
@@ -27,6 +27,9 @@ int main(int argc, char *argv[])
         case 'T':
             t = 1; // -T 옵션 설정
             break;
+        case 's':
+            s = 1; // -s 옵션 설정
+            break;
         default:
             printf("%s: 잘못된 옵션 -- '%c'\n", argv[0], optopt);
             return 1;
@@ -41,11 +44,11 @@ int main(int argc, char *argv[])
     }
 
     char *filename = argv[optind];
-    return cat(filename, n, b, e, t);
+    return cat(filename, n, b, e, t, s);
 }
 
 // cat 함수: 파일을 읽어서 출력하는 함수
-int cat(char *filename, int n, int b, int E, int T)
+int cat(char *filename, int n, int b, int E, int T, int s)
 {
     FILE *fp = fopen(filename, "r");
 
@@ -58,10 +61,21 @@ int cat(char *filename, int n, int b, int E, int T)
 
     char buff[SIZE]; // 파일의 내용을 저장할 버퍼
     int line = 0;    // 줄 번호
+    int empty_line = 0; // 이전 줄이 비어있는지 여부를 저장
 
     // 파일의 각 줄을 읽어서 처리
     while (fgets(buff, SIZE, fp) != NULL)
     {
+        if (s && buff[0] == '\n') {
+            if (empty_line) {
+                continue; // -s 옵션이 설정되고 이전 줄도 비어있는 경우에는 출력하지 않음
+            } else {
+                empty_line = 1; // -s 옵션이 설정되고 이전 줄이 비어있지 않은 경우에는 empty_line 플래그를 설정
+            }
+        } else {
+            empty_line = 0; // 이전 줄이 비어있지 않은 경우에는 empty_line 플래그를 초기화
+        }
+
         if (b && buff[0] != '\n')
             printf("%6d  ", ++line); // -b 옵션이 설정되고 빈 줄이 아닌 경우에 줄 번호 출력
         else if (!b && n)
