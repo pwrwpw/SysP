@@ -27,7 +27,7 @@
 ![cat1](./jpg/cat%20-b.png)
 ![cat2](./jpg/cat%20-n.png)
 ![cat3](./jpg/cat%20-E.png)
-![cat4](./jpg/cat%20-T.png)
+![cat4](./jpg/cat%20-t.png)
 ![cat5](./jpg/cat%20-s.png)
 ### `clear`
 
