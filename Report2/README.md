@@ -72,10 +72,11 @@
 ```shell
 ./echo 출력할 메시지
 ```
+- `-n`: 각 줄에 번호를 붙여 출력합니다
 
 **실행 화면:**
 ![echo](./jpg/echo.png)
-
+![echo](./jpg/echo%20-n.png)
 ### `env`
 
 환경 변수를 출력합니다.
@@ -254,11 +255,16 @@
 
 - 아무 입력 없을 시 -s 옵션과 동일한 커널 이름을 표시함
 
+### `rev`
+
+주어진 텍스트를 뒤집어서 출력
+
+**사용 예시:**
+```shell
+./rev <>
+```
+
 **실행 화면:**
-![uname](./jpg/uname.png)
-![uname](./jpg/uname%20-a.png)
-![uname](./jpg/uname%20-s.png)
-![uname](./jpg/uname%20-n.png)
-![uname](./jpg/uname%20-r.png)
-![uname](./jpg/uname%20-m.png)
+![rev](./jpg/rev.png)
+
 
